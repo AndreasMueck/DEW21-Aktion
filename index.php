@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabulator Test</title>
+    <title>DEW21 Aktion</title>
     <link href="dist/css/tabulator.css" rel="stylesheet">
     <link href="dist/css/btn.style.css" rel="stylesheet">
     <script type="text/javascript" src="dist/js/tabulator.js"></script>
