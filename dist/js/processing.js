@@ -3,15 +3,15 @@
 //
 
 function formatter_EditButton(cell, formatterParams, onRendered) {
-    return "<button class='small button'>Bearbeiten</button>";
+    return "<button id='editButton' class='small button'><i class='fas fa-edit'></i>&nbsp;Bearbeiten</button>";
 }
 
 function formatter_CancelButton(cell, formatterParams, onRendered) {
-    return "<button class='small blue button'>Abbrechen</button>";
+    return "<button id='cancelButton' class='small blue button'><i class='fas fa-window-close'></i>&nbsp;Abbrechen</button>";
 }
 
 function formatter_SaveButton(cell, formatterParams, onRendered) {
-    return "<button class='small green button'>Speichern</button>";
+    return "<button id='saveButton' class='small green button'><i class='far fa-save'></i>&nbsp;Speichern</button>";
 }
 
 //
@@ -19,6 +19,7 @@ function formatter_SaveButton(cell, formatterParams, onRendered) {
 //
 
 function cellClick_EditButton(e, cell) {
+
     currentRow = cell.getRow()
     currentTable = cell.getTable()
     selectedRows = currentTable.getSelectedRows()
@@ -38,6 +39,9 @@ function cellClick_EditButton(e, cell) {
         currentTable.hideColumn("EditButton")
         currentTable.showColumn("CancelButton")
         currentTable.showColumn("SaveButton")
+
+        editMode = true;
+
     } else {
         alert('Bitte nur eine Zeile markieren.');
         return
@@ -96,6 +100,13 @@ function cellClick_SaveButton(e, cell) {
 // Hilfsfunktionen für den "Bearbeitungsmodus"
 //
 
+function checkEditMode() {
+    if (editMode == true) {
+        return true;
+    }
+    return false;
+}
+
 function stopEditing(cell) {
     currentRow = cell.getRow()
     currentTable = cell.getTable()
@@ -104,10 +115,16 @@ function stopEditing(cell) {
     currentTable.hideColumn("CancelButton")
     currentTable.hideColumn("SaveButton")
     currentRow.reformat()
+
+    editMode = false;
 }
 
 function isRowSelected(cell) {
-    return cell.getRow().isSelected()
+    //Bearbeiten ist möglich wenn Zeile markiert ist
+    //return cell.getRow().isSelected()
+
+    //Bearbeiten ist nur möglich, wenn Button Bearbeiten geklickt wurde. Parameter editMode mit Funktion checkEditMode
+    return checkEditMode();
 }
 
 //
@@ -242,10 +259,11 @@ input.addEventListener("keyup", function() {
 //
 
 var table = new Tabulator("#tabelle", {
-    height: 550, // Setze die Höhe der Tabelle (in CSS oder hier), das erstellt das Virtual DOM verbessert den Render Speed dramatisch (jeder gültige CSS Wert möglich)
+    height: 400, // Setze die Höhe der Tabelle (in CSS oder hier), das erstellt das Virtual DOM verbessert den Render Speed dramatisch (jeder gültige CSS Wert möglich)
     ajaxURL: "getData.php", //Füge die Daten der Tabelle hinzu
-    layout: "fitColumns", //Passe die Tabellenspalten an (optional) fitColumns, fitData
+    layout: "fitDataFill", //Passe die Tabellenspalten an (optional) fitColumns, fitData, fitDataFill
     downloadRowRange: "selected", //Ausgewählte Daten exportieren
+    //selectable: false, //AMTEST
     columns: [ //Definiere die Tabellenspalten
         {
             // Spalte: Selektion Checkbox
@@ -268,6 +286,7 @@ var table = new Tabulator("#tabelle", {
             width: 180,
             // Die Spalte "Status" ist editierbar
             editable: isRowSelected,
+            //editable: isEditButtonClicked,
             editor: "select",
             editorParams: {
                 "Angelegt": "Angelegt",
@@ -394,15 +413,16 @@ var table = new Tabulator("#tabelle", {
             formatter: formatter_EditButton,
             cellClick: cellClick_EditButton,
             headerSort: false,
-            width: 110,
+            width: 140,
             align: "center",
-            resizable: false
+            resizable: false,
+            //cssClass: "blue-background"
         }, {
             field: "CancelButton",
             formatter: formatter_CancelButton,
             cellClick: cellClick_CancelButton,
             headerSort: false,
-            width: 110,
+            width: 140,
             align: "center",
             resizable: false,
             visible: false
@@ -411,10 +431,17 @@ var table = new Tabulator("#tabelle", {
             formatter: formatter_SaveButton,
             cellClick: cellClick_SaveButton,
             headerSort: false,
-            width: 110,
+            width: 140,
             align: "center",
             resizable: false,
             visible: false
         },
     ],
+    // Footer Buttons
+    footerElement: "<button>Eigener Button im Footer</button>",
+    // Ereignis Klick
+    rowClick: function(e, row) { //trigger eine alert box wenn die Zeile angeklickt wurde
+        //alert("Zeile " + row.getData().id + " angeklickt!");
+        //row.toggleSelect();
+    },
 });
