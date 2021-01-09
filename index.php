@@ -7,24 +7,37 @@
     <title>DEW21 Aktion</title>
     <link href="dist/css/tabulator.css" rel="stylesheet">
     <link href="dist/css/btn.style.css" rel="stylesheet">
+    <link href="dist/css/all.css" rel="stylesheet"> <!--load all styles -->
     <script type="text/javascript" src="dist/js/tabulator.js"></script>
     <style>
-        /* Tabulator Background Default Farbe aus CSS überschreiben */
+        * {
+            font-family: Verdana, Geneva, sans-serif;
+        }
+
+        /* Tabulator CSS Defaults überschreiben, bzw. ergänzen */
         .tabulator {
             background-color: #FFFFFF;
+            /* resize: vertical;
+            overflow: hidden;
+            min-height: 550px; */
+        }
+
+        .blue-background {
+            background-color: #0000CC;
+            /* added with cssClass in column */
         }
     </style>
 </head>
 
 <body>
     <!-- Button Bar für die Interaktion mit der Tabelle -->
-        <div>
-            <button id='download-csv' class='small button'>Download CSV</button>
-            <button id='group' class='small button'>Nach Status gruppieren</button>
-            <button id='ungroup' class='small button'>Gruppierung aufheben</button>
-                <label for="fTxtSuche">Suchen</label>
-                <input type="text" id="fTxtSuche" name="fTxtSuche">
-        </div>
+    <div>
+        <button id='download-csv' class='small button'><i class="fas fa-download"></i>&nbsp;Download CSV</button>
+        <button id='group' class='small button'><i class="fas fa-object-group"></i>&nbsp;Nach Status gruppieren</button>
+        <button id='ungroup' class='small button'><i class="fas fa-object-ungroup"></i>&nbsp;Gruppierung aufheben</button>
+        <label for="fTxtSuche">Suchen</label>&nbsp;<i class="fas fa-search"></i>
+        <input type="text" id="fTxtSuche" name="fTxtSuche">
+    </div><div class="result"></div><br>
 
     <!-- // WICHTIG! DIV mit ID "tabelle" Element für das virtuelle DOM, hierüber wird programmatisch die Tabelle erstellt -->
     <div id="tabelle"></div>
@@ -57,4 +70,5 @@
         </li>
     </ul>
 </body>
+
 </html>
