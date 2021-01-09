@@ -37,7 +37,7 @@
         <button id='ungroup' class='small button'><i class="fas fa-object-ungroup"></i>&nbsp;Gruppierung aufheben</button>
         <label for="fTxtSuche">Suchen</label>&nbsp;<i class="fas fa-search"></i>
         <input type="text" id="fTxtSuche" name="fTxtSuche">
-    </div><div class="result"></div><br>
+    </div><br>
 
     <!-- // WICHTIG! DIV mit ID "tabelle" Element für das virtuelle DOM, hierüber wird programmatisch die Tabelle erstellt -->
     <div id="tabelle"></div>
