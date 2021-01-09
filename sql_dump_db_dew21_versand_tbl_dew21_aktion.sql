@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 04. Jan 2021 um 18:15
+-- Erstellungszeit: 09. Jan 2021 um 09:24
 -- Server-Version: 8.0.22-0ubuntu0.20.04.3
 -- PHP-Version: 7.4.3
 
@@ -60,6 +60,16 @@ INSERT INTO `dew21_aktion` (`id`, `status`, `firma`, `vorname`, `nachname`, `str
 (8, 'Versendet', '', 'Schrank', 'Wand', 'Ikeaallee 21', '76543', 'Ikeahausen', 'DE', '', '2020-12-28 19:30:02', '2020-12-20 15:30:59', '987654321'),
 (9, 'Versendet', 'Computer AG', 'Ben', 'Maus', 'An der Festplatte 12', '54533', 'Itstadt', 'DE', '', '2020-12-30 19:30:02', '2020-12-20 19:30:59', '987654321'),
 (10, 'Gelöscht', '', 'Klaus', 'Meier', 'Stuttgarter Allee 65', '78723', 'Stuttgart', 'DE', '2121-12312', '2021-01-02 19:30:02', '2020-12-20 19:30:59', '');
+
+--
+-- Indizes der exportierten Tabellen
+--
+
+--
+-- Indizes für die Tabelle `dew21_aktion`
+--
+ALTER TABLE `dew21_aktion`
+  ADD PRIMARY KEY (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
