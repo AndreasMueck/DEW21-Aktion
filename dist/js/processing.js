@@ -91,7 +91,8 @@ function cellClick_SaveButton(e, cell) {
         var id = cell.getData().id;
         var status = cell.getData().status;
         var sendungsnummer = cell.getData().sendungsnummer;
-        var data = JSON.stringify({ "id": id, "status": status, "sendungsnummer": sendungsnummer });
+        var data = JSON.stringify({ "id": id, "status": status, "sendungsnummer": sendungsnummer }, null, '\t'); // ...,null, '\t' Ausgabe Formatierung JSON
+        console.log(data);
         makeRequest('saveData.php', data);
     }
 }
@@ -101,6 +102,7 @@ function cellClick_SaveButton(e, cell) {
 //
 
 function checkEditMode() {
+    // Setze editMode für Bearbeiten in cellClick_EditButton und für Abbrechen und Speichern in function stopEditing
     if (editMode == true) {
         return true;
     }
@@ -123,7 +125,7 @@ function isRowSelected(cell) {
     //Bearbeiten ist möglich wenn Zeile markiert ist
     //return cell.getRow().isSelected()
 
-    //Bearbeiten ist nur möglich, wenn Button Bearbeiten geklickt wurde. Parameter editMode mit Funktion checkEditMode
+    //Bearbeiten ist nur möglich, wenn Button Bearbeiten geklickt wurde. Parameter editMode mit Funktion checkEditMode : Ergebnis true oder false
     return checkEditMode();
 }
 
@@ -215,13 +217,17 @@ function matchAny(data, filterParams) {
 // Button Trigger für Download der CSV Datei
 //
 
+function minuten_mit_nullen(d) {
+    return (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+}
+
 var d = new Date();
 var tag = d.getDate();
 var monat = d.getMonth();
 var monat = monat + 1; // Javascript 0=Januar, 1=Februar
 var jahr = d.getFullYear();
 var stunde = d.getHours();
-var minute = d.getMinutes();
+var minute = minuten_mit_nullen(d);
 var filename = 'DEW21 Aktionsliste vom ' + tag + '.' + monat + '.' + jahr + '-' + stunde + minute + '.csv';
 
 document.getElementById("download-csv").addEventListener("click", function() {
@@ -252,19 +258,27 @@ input.addEventListener("keyup", function() {
     }
 });
 
+//
+// Initial: Tabellenzeile kann nicht bearbeitet werden, Edit = Off
+//
+var editMode = false;
+
 // ************************************************************************************
 // Erstelle die Tabelle im DOM Element mit id "tabelle" --> Hier: HTML mit DIV-ELement und ID "tabelle"
 // 1) Tabellendefinition
 // 2) Spaltendefinition
 //
 
+
+
+
 var table = new Tabulator("#tabelle", {
     height: 400, // Setze die Höhe der Tabelle (in CSS oder hier), das erstellt das Virtual DOM verbessert den Render Speed dramatisch (jeder gültige CSS Wert möglich)
     ajaxURL: "getData.php", //Füge die Daten der Tabelle hinzu
     layout: "fitDataFill", //Passe die Tabellenspalten an (optional) fitColumns, fitData, fitDataFill
     downloadRowRange: "selected", //Ausgewählte Daten exportieren
-    //selectable: false, //AMTEST
-    columns: [ //Definiere die Tabellenspalten
+
+    columns: [ // Definiere die Tabellenspalten
         {
             // Spalte: Selektion Checkbox
             formatter: "rowSelection",
@@ -286,7 +300,6 @@ var table = new Tabulator("#tabelle", {
             width: 180,
             // Die Spalte "Status" ist editierbar
             editable: isRowSelected,
-            //editable: isEditButtonClicked,
             editor: "select",
             editorParams: {
                 "Angelegt": "Angelegt",
@@ -310,24 +323,24 @@ var table = new Tabulator("#tabelle", {
                 var status = cell.getValue();
                 switch (status) {
                     case 'Angelegt':
-                        cell.getElement().style.background = "#5384CF";
-                        cell.getElement().style.color = "white";
+                        cell.getElement().style.background = "#F3F4F6";
+                        cell.getElement().style.color = "#374151";
                         break;
                     case 'In Bearbeitung':
-                        cell.getElement().style.background = "#97B492";
-                        cell.getElement().style.color = "white";
+                        cell.getElement().style.background = "#DDF2FD";
+                        cell.getElement().style.color = "#0369a1";
                         break;
                     case 'Versendet':
-                        cell.getElement().style.background = "#37545C";
-                        cell.getElement().style.color = "white";
+                        cell.getElement().style.background = "#D7FCE8";
+                        cell.getElement().style.color = "#15803d";
                         break;
                     case 'Storniert':
-                        cell.getElement().style.background = "#EC5B25";
-                        cell.getElement().style.color = "white";
+                        cell.getElement().style.background = "#FFF2C9";
+                        cell.getElement().style.color = " #b45309";
                         break;
                     case 'Gelöscht':
-                        cell.getElement().style.background = "#D72E3A";
-                        cell.getElement().style.color = "white";
+                        cell.getElement().style.background = "#FFE2E2";
+                        cell.getElement().style.color = "#b91c1c";
                         break;
                     default:
                         // irgendwas, falls Status nicht in der Liste
@@ -437,8 +450,12 @@ var table = new Tabulator("#tabelle", {
             visible: false
         },
     ],
+    dataLoaded: function(data) {
+        var el = document.getElementById("dataCount");
+        el.innerHTML = 'Gesamtzahl der Datensätze: ' + data.length;
+    },
     // Footer Buttons
-    footerElement: "<button>Eigener Button im Footer</button>",
+    footerElement: "<div id=dataCount style=float:left></div><button>Eigener Button im Footer</button>",
     // Ereignis Klick
     rowClick: function(e, row) { //trigger eine alert box wenn die Zeile angeklickt wurde
         //alert("Zeile " + row.getData().id + " angeklickt!");
