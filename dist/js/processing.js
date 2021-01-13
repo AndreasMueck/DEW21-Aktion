@@ -7,7 +7,7 @@ function formatter_EditButton(cell, formatterParams, onRendered) {
 }
 
 function formatter_CancelButton(cell, formatterParams, onRendered) {
-    return "<button id='cancelButton' class='small blue button'><i class='fas fa-window-close'></i>&nbsp;Abbrechen</button>";
+    return "<button id='cancelButton' class='small red button'><i class='fas fa-window-close'></i>&nbsp;Abbrechen</button>";
 }
 
 function formatter_SaveButton(cell, formatterParams, onRendered) {
@@ -285,17 +285,15 @@ var selectedRow = '';
 // Erstelle die Tabelle im DOM Element mit id "tabelle" --> Hier: HTML mit DIV-ELement und ID "tabelle"
 // 1) Tabellendefinition
 // 2) Spaltendefinition
-//
-
-
-
+// 3) Methoden und Eigenschaften
 
 var table = new Tabulator("#tabelle", {
     height: 400, // Setze die Höhe der Tabelle (in CSS oder hier), das erstellt das Virtual DOM verbessert den Render Speed dramatisch (jeder gültige CSS Wert möglich)
-    ajaxURL: "getData.php", //Füge die Daten der Tabelle hinzu
+    ajaxURL: "getData.php", //Füge die Daten per AJAX-Call der Tabelle hinzu
     layout: "fitDataFill", //Passe die Tabellenspalten an (optional) fitColumns, fitData, fitDataFill
     downloadRowRange: "selected", //Ausgewählte Daten exportieren
 
+    // ### Tabellenspalten ### //
     columns: [ // Definiere die Tabellenspalten
         {
             // Spalte: Selektion Checkbox
@@ -381,12 +379,15 @@ var table = new Tabulator("#tabelle", {
             editor: "select",
             //values: true,
             editorParams: {
+                values: ["Angelegt", "In Bearbeitung", "Versendet", "Storniert", "Gelöscht"]
+            },
+            /* editorParams: {
                 "Angelegt": "Angelegt",
                 "In Bearbeitung": "In Bearbeitung",
                 "Versendet": "Versendet",
                 "Storniert": "Storniert",
                 "Gelöscht": "Gelöscht",
-            },
+            }, */
             // Die Spalte "Status" ist filterbar
             headerFilter: true,
             headerFilterParams: {
@@ -469,12 +470,16 @@ var table = new Tabulator("#tabelle", {
             visible: false
         },
     ],
+
+    // Zeige Anzahl Datensätze
     dataLoaded: function(data) {
-        var el = document.getElementById("dataCount");
+        var el = document.getElementById("dataCount"); //footerElement
         el.innerHTML = 'Gesamtzahl der Datensätze: ' + data.length;
     },
+
     // Footer Buttons
     footerElement: "<div id=dataCount style=float:left></div><button>Eigener Button im Footer</button>",
+
     // Ereignis Klick
     rowClick: function(e, row) { //trigger eine alert box wenn die Zeile angeklickt wurde
         //alert("Zeile " + row.getData().id + " angeklickt!");
