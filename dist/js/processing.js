@@ -11,7 +11,7 @@ function formatter_CancelButton(cell, formatterParams, onRendered) {
 }
 
 function formatter_SaveButton(cell, formatterParams, onRendered) {
-    return "<button id='saveButton' class='small green button'><i class='far fa-save'></i>&nbsp;Speichern</button>";
+    return "<button id='saveButton' class='small green button'><i class='fas fa-save'></i>&nbsp;Speichern</button>";
 }
 
 //
