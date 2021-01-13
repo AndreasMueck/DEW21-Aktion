@@ -3,7 +3,7 @@
 //
 
 function formatter_EditButton(cell, formatterParams, onRendered) {
-    return "<button id='editButton' class='small button'><i class='fas fa-edit'></i>&nbsp;Bearbeiten</button>";
+    return "<button id='editButton' class='small blue button'><i class='fas fa-edit'></i>&nbsp;Bearbeiten</button>";
 }
 
 function formatter_CancelButton(cell, formatterParams, onRendered) {
