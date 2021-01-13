@@ -24,6 +24,14 @@ function cellClick_EditButton(e, cell) {
     currentTable = cell.getTable()
     selectedRows = currentTable.getSelectedRows()
     if ((selectedRows.length == 0) || (selectedRows.length == 1)) {
+
+        // Set editMode
+        editMode = true;
+        //console.log('Bearbeiten:' + editMode);
+
+        // Set row number
+        selectedRow = cell.getData().id;
+
         for (i = 0; i < selectedRows.length; i++) {
             selectedRows[i].deselect()
             selectedRows[i].reformat()
@@ -40,7 +48,7 @@ function cellClick_EditButton(e, cell) {
         currentTable.showColumn("CancelButton")
         currentTable.showColumn("SaveButton")
 
-        editMode = true;
+        //editMode = true;
 
     } else {
         alert('Bitte nur eine Zeile markieren.');
@@ -76,24 +84,32 @@ function cellClick_SaveButton(e, cell) {
     if (!cell.getRow().isSelected()) {
         return
     }
-    //Speichern bestätigen
-    if (window.confirm("Änderungen speichern? ID: " + cell.getData().id + " Status: " + cell.getData().status + "?")) {
-        stopEditing(cell);
 
-        //Status nur neu gruppieren, wenn die Tabellenansicht gruppiert war
-        groupComponents = table.getGroups()
-        if (groupComponents.length != 0) {
-            updateGroups();
+    // Stimmt die Zeilennummer mit Bearbeitungszeilennummer überein?
+    if (cell.getData().id == selectedRow) {
+
+        //Speichern bestätigen
+        if (window.confirm("Änderungen speichern? ID: " + cell.getData().id + " Status: " + cell.getData().status + "?")) {
+            stopEditing(cell);
+
+            //Status nur neu gruppieren, wenn die Tabellenansicht gruppiert war
+            groupComponents = table.getGroups()
+            if (groupComponents.length != 0) {
+                updateGroups();
+            }
+
+            //AJAX Aufurf zum Speichern der Daten: ID, STATUS, SENDUNGSNUMMER
+            //ARRAY!!!
+            var id = cell.getData().id;
+            var status = cell.getData().status;
+            var sendungsnummer = cell.getData().sendungsnummer;
+            var data = JSON.stringify({ "id": id, "status": status, "sendungsnummer": sendungsnummer }, null, '\t'); // ...,null, '\t' Ausgabe Formatierung JSON
+            console.log(data);
+            makeRequest('saveData.php', data);
         }
-
-        //AJAX Aufurf zum Speichern der Daten: ID, STATUS, SENDUNGSNUMMER
-        //ARRAY!!!
-        var id = cell.getData().id;
-        var status = cell.getData().status;
-        var sendungsnummer = cell.getData().sendungsnummer;
-        var data = JSON.stringify({ "id": id, "status": status, "sendungsnummer": sendungsnummer }, null, '\t'); // ...,null, '\t' Ausgabe Formatierung JSON
-        console.log(data);
-        makeRequest('saveData.php', data);
+    } else {
+        alert('Beenden Sie zuerst die Bearbeitung in der Zeile mit ID: ' + selectedRow);
+        return;
     }
 }
 
@@ -119,6 +135,7 @@ function stopEditing(cell) {
     currentRow.reformat()
 
     editMode = false;
+    console.log('Bearbeiten:' + editMode);
 }
 
 function isRowSelected(cell) {
@@ -262,6 +279,7 @@ input.addEventListener("keyup", function() {
 // Initial: Tabellenzeile kann nicht bearbeitet werden, Edit = Off
 //
 var editMode = false;
+var selectedRow = '';
 
 // ************************************************************************************
 // Erstelle die Tabelle im DOM Element mit id "tabelle" --> Hier: HTML mit DIV-ELement und ID "tabelle"
@@ -294,6 +312,66 @@ var table = new Tabulator("#tabelle", {
             width: 50,
             headerSort: false,
         }, {
+            // Spalte: Firma
+            title: "Firma",
+            field: "firma",
+            headerSort: false,
+            width: 100,
+        }, {
+            // Spalte: Nachname
+            title: "Nachname",
+            field: "nachname",
+            headerSort: false,
+            width: 100,
+        }, {
+            // Spalte: Vorname
+            title: "Vorname",
+            field: "vorname",
+            headerSort: false,
+            width: 100,
+        }, {
+            // Spalte: Strasse
+            title: "Strasse",
+            field: "strasse",
+            headerSort: false,
+            width: 150,
+        }, {
+            // Spalte: PLZ
+            title: "PLZ",
+            field: "plz",
+            headerSort: false,
+            width: 50,
+        }, {
+            // Spalte: Ort
+            title: "Ort",
+            field: "ort",
+            headerSort: false,
+            width: 100,
+        }, {
+            // Spalte: Land
+            title: "Land",
+            field: "land",
+            headerSort: false,
+            width: 100,
+        }, {
+            // Spalte: Referenz
+            title: "Referenz",
+            field: "referenz",
+            headerSort: false,
+            width: 100,
+        }, {
+            // Spalte: bestelldatum
+            title: "Bestelldatum",
+            field: "bestelldatum",
+            //headerSort: false,
+            width: 150,
+        }, {
+            // Spalte: erstellungsdatum
+            title: "Erstellungsdatum",
+            field: "erstellungsdatum",
+            //headerSort: false,
+            width: 150,
+        }, {
             //Spalte: Status
             title: "Status",
             field: "status",
@@ -301,6 +379,7 @@ var table = new Tabulator("#tabelle", {
             // Die Spalte "Status" ist editierbar
             editable: isRowSelected,
             editor: "select",
+            //values: true,
             editorParams: {
                 "Angelegt": "Angelegt",
                 "In Bearbeitung": "In Bearbeitung",
@@ -348,66 +427,6 @@ var table = new Tabulator("#tabelle", {
                 // !!! Rückgabe des Texts in der Tabellenzelle
                 return status;
             }
-        }, {
-            // Spalte: Firma
-            title: "Firma",
-            field: "firma",
-            headerSort: false,
-            width: 100,
-        }, {
-            // Spalte: Vorname
-            title: "Vorname",
-            field: "vorname",
-            headerSort: false,
-            width: 100,
-        }, {
-            // Spalte: Nachname
-            title: "Nachname",
-            field: "nachname",
-            headerSort: false,
-            width: 100,
-        }, {
-            // Spalte: Strasse
-            title: "Strasse",
-            field: "strasse",
-            headerSort: false,
-            width: 150,
-        }, {
-            // Spalte: PLZ
-            title: "PLZ",
-            field: "plz",
-            headerSort: false,
-            width: 50,
-        }, {
-            // Spalte: Ort
-            title: "Ort",
-            field: "ort",
-            headerSort: false,
-            width: 100,
-        }, {
-            // Spalte: Land
-            title: "Land",
-            field: "land",
-            headerSort: false,
-            width: 100,
-        }, {
-            // Spalte: Referenz
-            title: "Referenz",
-            field: "referenz",
-            headerSort: false,
-            width: 100,
-        }, {
-            // Spalte: bestelldatum
-            title: "Bestelldatum",
-            field: "bestelldatum",
-            //headerSort: false,
-            width: 150,
-        }, {
-            // Spalte: erstellungsdatum
-            title: "Erstellungsdatum",
-            field: "erstellungsdatum",
-            //headerSort: false,
-            width: 150,
         }, {
             // Spalte: Sendungsnummer
             title: "Sendungsnummer",
