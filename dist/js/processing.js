@@ -25,10 +25,6 @@ function cellClick_EditButton(e, cell) {
     selectedRows = currentTable.getSelectedRows()
     if ((selectedRows.length == 0) || (selectedRows.length == 1)) {
 
-        // Set editMode
-        editMode = true;
-        //console.log('Bearbeiten:' + editMode);
-
         // Set row number
         selectedRow = cell.getData().id;
 
@@ -47,8 +43,6 @@ function cellClick_EditButton(e, cell) {
         currentTable.hideColumn("EditButton")
         currentTable.showColumn("CancelButton")
         currentTable.showColumn("SaveButton")
-
-        //editMode = true;
 
     } else {
         alert('Bitte nur eine Zeile markieren.');
@@ -85,7 +79,7 @@ function cellClick_SaveButton(e, cell) {
         return
     }
 
-    // Stimmt die Zeilennummer mit Bearbeitungszeilennummer überein?
+    // Stimmt die Zeilennummer mit der ersten Bearbeitungszeilennummer überein?
     if (cell.getData().id == selectedRow) {
 
         //Speichern bestätigen
@@ -117,14 +111,6 @@ function cellClick_SaveButton(e, cell) {
 // Hilfsfunktionen für den "Bearbeitungsmodus"
 //
 
-function checkEditMode() {
-    // Setze editMode für Bearbeiten in cellClick_EditButton und für Abbrechen und Speichern in function stopEditing
-    if (editMode == true) {
-        return true;
-    }
-    return false;
-}
-
 function stopEditing(cell) {
     currentRow = cell.getRow()
     currentTable = cell.getTable()
@@ -133,17 +119,11 @@ function stopEditing(cell) {
     currentTable.hideColumn("CancelButton")
     currentTable.hideColumn("SaveButton")
     currentRow.reformat()
-
-    editMode = false;
-    console.log('Bearbeiten:' + editMode);
 }
 
 function isRowSelected(cell) {
-    //Bearbeiten ist möglich wenn Zeile markiert ist
-    //return cell.getRow().isSelected()
-
-    //Bearbeiten ist nur möglich, wenn Button Bearbeiten geklickt wurde. Parameter editMode mit Funktion checkEditMode : Ergebnis true oder false
-    return checkEditMode();
+    // Bearbeiten ist möglich wenn Zeile markiert ist
+    return cell.getRow().isSelected()
 }
 
 //
@@ -278,7 +258,6 @@ input.addEventListener("keyup", function() {
 //
 // Initial: Tabellenzeile kann nicht bearbeitet werden, Edit = Off
 //
-var editMode = false;
 var selectedRow = '';
 
 // ************************************************************************************
@@ -292,7 +271,6 @@ var table = new Tabulator("#tabelle", {
     ajaxURL: "getData.php", //Füge die Daten per AJAX-Call der Tabelle hinzu
     layout: "fitDataFill", //Passe die Tabellenspalten an (optional) fitColumns, fitData, fitDataFill
     downloadRowRange: "selected", //Ausgewählte Daten exportieren
-
     // ### Tabellenspalten ### //
     columns: [ // Definiere die Tabellenspalten
         {
