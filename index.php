@@ -69,6 +69,7 @@
             <p>Die Freitextsuche über das Feld <i>Suchen</i> erfolgt über alle Tabellenspalten. Gross-/Kleinschreibung wird ignoriert und es ist eine Teilsuche möglich, so werden z.B. Isernhagen und Iserlohn gefunden bei der Eingabe von "Iser"</p>
         </li>
     </ul>
+    <p>Test</p>
 </body>
 
 </html>
