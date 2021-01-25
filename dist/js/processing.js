@@ -1,7 +1,5 @@
 // Todo: @AndreasMueck
 
-
-
 //
 // Buttons für die Datensatz Bearbeitung
 //
